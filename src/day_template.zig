@@ -15,17 +15,14 @@ const part2 = struct {
 };
 
 fn calculateAnswer() ![2]usize {
-    var answer1: usize = 0;
-    var answer2: usize = 0;
+    const answer1: usize = 0;
+    const answer2: usize = 0;
 
     var file_line_reader = try helpers.file.LineIterator(100).fromAdventDay(1, false);
     defer file_line_reader.deinit();
     while (file_line_reader.next()) |line| {
         _ = line;
     }
-
-    answer1 = 0;
-    answer2 = 0;
 
     return .{ answer1, answer2 };
 }
