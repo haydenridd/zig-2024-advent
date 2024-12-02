@@ -56,11 +56,11 @@ const part1 = struct {
 };
 
 const part2 = struct {
-    /// TODO: This can be optimized since we know the array is sorted
-    fn countInSlice(item: isize, slice: []const isize) usize {
+    fn countInSortedSlice(item: isize, slice: []const isize) usize {
         var count: usize = 0;
         for (slice) |v| {
             if (item == v) count += 1;
+            if (v > item) return count;
         }
         return count;
     }
@@ -71,7 +71,7 @@ const part2 = struct {
         var ans: usize = 0;
 
         for (arrays.l.constSlice()) |v| {
-            ans += @as(usize, @intCast(v)) * countInSlice(v, arrays.r.constSlice());
+            ans += @as(usize, @intCast(v)) * countInSortedSlice(v, arrays.r.constSlice());
         }
 
         return ans;

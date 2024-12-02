@@ -2,7 +2,7 @@ const std = @import("std");
 const File = std.fs.File;
 
 pub fn fpFromAdventDay(comptime day: usize, comptime test_input: bool) []const u8 {
-    return (if (test_input) "./test_inputs/" else "./inputs/") ++ std.fmt.comptimePrint("day{}", .{day}) ++ "_input.txt";
+    return (if (test_input) "./test_inputs/" else "./inputs/") ++ std.fmt.comptimePrint("day{}", .{day}) ++ ".txt";
 }
 
 /// Helpers for file IO
@@ -66,27 +66,35 @@ pub const file = struct {
     }
 
     test "Read Lines Iteratively" {
-        var file_reader = try LineIterator(100).init("test_inputs/test_file.txt");
-        defer file_reader.deinit();
-
-        var i: usize = 0;
         const expected_test_contents = [_][]const u8{ "hello", "from", "test", "file" };
-        while (file_reader.next()) |line| : (i += 1) {
-            try std.testing.expectEqualStrings(expected_test_contents[i], line);
+
+        inline for (&.{ "", "_eof" }) |ending_type| {
+            var file_reader = try LineIterator(100).init("test_inputs/test_file" ++ ending_type ++ ".txt");
+            defer file_reader.deinit();
+
+            var i: usize = 0;
+
+            while (file_reader.next()) |line| : (i += 1) {
+                try std.testing.expectEqualStrings(expected_test_contents[i], line);
+            }
+            try std.testing.expectEqual(4, i);
         }
-        try std.testing.expectEqual(4, i);
     }
 
     test "Read CSV Iteratively" {
-        var file_reader = try CsvIterator(100).init("test_inputs/test_file.csv");
-        defer file_reader.deinit();
-
-        var i: usize = 0;
         const expected_test_contents = [_][]const u8{ "hello", "from", "test", "file" };
-        while (file_reader.next()) |line| : (i += 1) {
-            try std.testing.expectEqualStrings(expected_test_contents[i], line);
+
+        inline for (&.{ "", "_eof" }) |ending_type| {
+            var file_reader = try CsvIterator(100).init("test_inputs/test_file" ++ ending_type ++ ".csv");
+            defer file_reader.deinit();
+
+            var i: usize = 0;
+
+            while (file_reader.next()) |line| : (i += 1) {
+                try std.testing.expectEqualStrings(expected_test_contents[i], line);
+            }
+            try std.testing.expectEqual(4, i);
         }
-        try std.testing.expectEqual(4, i);
     }
 
     /// Convenience type for collecting a file's contents into an array of strings per a specified delimiter
